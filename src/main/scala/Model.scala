@@ -33,7 +33,8 @@ object Model {
     println(s"Number of hits: ${hits.length}")
 
     hits.foreach { hit =>
-      val hitDoc = searcher.doc(hit.doc)
+      val storedFields = searcher.storedFields()
+      val hitDoc = storedFields.document(hit.doc)
       val content = hitDoc.get("content")
       val words = content.split(" ")
 

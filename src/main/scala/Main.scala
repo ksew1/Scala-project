@@ -33,9 +33,8 @@ object Main {
       "Football", "Traveling", "Kawa")
 
     predictionTexts.foreach { pt =>
-      println(s"\nPredictions for '${pt}':")
+      println(s"\nPredictions for '$pt':")
       Model.predict(pt, indexPath)
     }
   }
-
 }
