@@ -10,6 +10,7 @@ lazy val root = (project in file("."))
 libraryDependencies ++= Seq(
   "org.apache.lucene" % "lucene-core" % "9.5.0",
   "org.apache.lucene" % "lucene-analyzers-common" % "8.11.2",
-  "org.apache.lucene" % "lucene-queryparser" % "9.5.0"
+  "org.apache.lucene" % "lucene-queryparser" % "9.5.0",
 )
+libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31"
 
