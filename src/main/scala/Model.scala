@@ -7,7 +7,8 @@ import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.FSDirectory
 
-object LuceneShingleModel {
+
+object Model {
 
   def train(text: String, indexPath: String): Unit = {
     val dir = FSDirectory.open(Paths.get(indexPath))
@@ -34,20 +35,20 @@ object LuceneShingleModel {
     hits.foreach { hit =>
       val hitDoc = searcher.doc(hit.doc)
       val content = hitDoc.get("content")
-      val suggestedWord = content.split(" ")(1)
-      if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
-        println(suggestedWord)
+      val words = content.split(" ")
+
+      if (words.length > 2) {
+        val queryIndex = words.indexOf(queryText)
+
+        if (queryIndex != -1 && queryIndex + 1 < words.length) {
+          val suggestedWord = words(queryIndex + 1)
+          if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
+            println(suggestedWord)
+          }
+        }
       }
     }
-
     reader.close()
   }
-
-  def main(args: Array[String]): Unit = {
-    val text = "Cranford"
-    val indexPath = "./index/"
-
-    train(text, indexPath)
-    predict(text, indexPath)
-  }
 }
+
