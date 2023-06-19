@@ -1,14 +1,12 @@
+package gui
+
 import scalafx.Includes._
 import scalafx.application.JFXApp3
-import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.{Alert, Button, TextArea}
 import scalafx.scene.input.{KeyCode, KeyEvent}
 import scalafx.scene.layout.VBox
-import scalafx.scene.paint.Color._
-import scalafx.scene.shape.Rectangle
-import scalafx.scene.text.{Text, TextFlow}
 
 import java.io.PrintWriter
 
@@ -36,7 +34,7 @@ object Notepad extends JFXApp3 {
             insertAutoText(textArea)
           }
         } else {
-          if(tabPressed && !autoTextSaved) {
+          if (tabPressed && !autoTextSaved) {
             deleteAutoText(textArea)
           }
           tabPressed = false
@@ -47,8 +45,8 @@ object Notepad extends JFXApp3 {
       val saveButton = new Button("Save")
       saveButton.onAction = _ => {
         val content = textArea.text()
-        saveToFile(content,"saved.txt")
-        showAlert("Zapisano","Zapisano do pliku","Zapisano do pliku saved.txt")
+        saveToFile(content, "saved.txt")
+        showAlert("Zapisano", "Zapisano do pliku", "Zapisano do pliku saved.txt")
 
       }
       val vbox = new VBox(10)
@@ -62,36 +60,38 @@ object Notepad extends JFXApp3 {
 
   }
 
-  def generateAutoText(): String = {
+  private def generateAutoText(): String = {
     " - Automatyczny tekst"
   }
 
-  def insertAutoText(textArea: TextArea): Unit = {
+  private def insertAutoText(textArea: TextArea): Unit = {
     lastInsertedText = generateAutoText()
     textArea.insertText(textArea.getCaretPosition, lastInsertedText)
   }
-  def deleteAutoText(textArea: TextArea): Unit = {
+
+  private def deleteAutoText(textArea: TextArea): Unit = {
     textArea.deleteText(textArea.getCaretPosition - lastInsertedText.length, textArea.getCaretPosition)
   }
 
-  def saveAutoText(textArea: TextArea): Unit = {
+  private def saveAutoText(textArea: TextArea): Unit = {
     val autoText = textArea.text.value
   }
 
 
-  def saveToFile(content: String,filename:String): Unit = {
+  private def saveToFile(content: String, filename: String): Unit = {
     val writer = new PrintWriter(filename)
     writer.write(content)
     writer.close()
     println(s"Zapisano: $content")
   }
-  def showAlert(alertTitle:String,header:String,content:String): Unit = {
-  val alert= new Alert(AlertType.Information){
-    title = alertTitle
-    headerText =header
-    contentText = content
-    showAndWait()
-  }
+
+  private def showAlert(alertTitle: String, header: String, content: String): Unit = {
+    val alert = new Alert(AlertType.Information) {
+      title = alertTitle
+      headerText = header
+      contentText = content
+      showAndWait()
+    }
 
   }
 }
