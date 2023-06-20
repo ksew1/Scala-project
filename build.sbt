@@ -16,6 +16,8 @@ libraryDependencies ++= Seq(
 )
 libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31"
 libraryDependencies += "org.jsoup" % "jsoup" % "1.15.4"
+libraryDependencies += "org.apache.commons" % "commons-text" % "1.10.0"
+
 
 libraryDependencies ++= Seq(
   "com.softwaremill.sttp.client3" %% "core" % "3.8.13",

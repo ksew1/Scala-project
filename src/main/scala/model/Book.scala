@@ -1,3 +1,5 @@
+package model
+
 
 case class Book(kind: String, full_sort_key: String, title: String, url: String, cover_color: String,
                 author: String, cover: String, epoch: String, href: String, has_audio: Boolean,

@@ -1,4 +1,4 @@
-import model.Model
+import model.{Data, Model}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -86,12 +86,12 @@ object Main {
       "Donald_Trump",
       "Piwo"
     )
-//    titles.foreach { title =>
-//      val text = Data.getWikipediaPlainText(title)
-//      println(text)
-//      println()
-//      Model.train(text, indexPath)
-//    }
+    titles.foreach { title =>
+      val text = Data.getWikipediaPlainText(title)
+      println(text)
+      println()
+      Model.train(text, indexPath)
+    }
 
 
 

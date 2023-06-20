@@ -1,6 +1,6 @@
 import io.circe.generic.auto._
 import io.circe.parser._
-import model.Data
+import model.{Book, Data}
 import sttp.client3._
 
 
