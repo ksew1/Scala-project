@@ -20,7 +20,7 @@ object Data {
     }.getOrElse("")
   }
 
-  def fetchWolneLekturyBooks(): Unit = {
+  def fetchWolneLekturyBooks(): Option[List[String]] = {
     val backend = HttpURLConnectionBackend()
     val request = basicRequest.get(uri"https://wolnelektury.pl/api/books/")
     val response = request.send(backend)
@@ -28,16 +28,24 @@ object Data {
     response.body match {
       case Right(body) =>
         decode[List[Book]](body) match {
-          case Right(books) =>
-            val hrefs = books.map(_.href).map(_.split("/").filter(_.nonEmpty).last)
-            hrefs.foreach(book => println(fetchWolneLekturyBook(book)))
+          case Right(books) => {
+            Some(books.map(_.href)
+              .map(_.split("/").filter(_.nonEmpty).last)
+              .map(book => fetchWolneLekturyBook(book)))
+          }
 
-          case Left(error) =>
+
+          case Left(error) => {
             println(s"Failed to parse JSON: $error")
+            None
+          }
+
         }
 
-      case Left(error) =>
+      case Left(error) => {
         println(s"Failed to fetch data from API: $error")
+        None
+      }
     }
   }
 

@@ -51,9 +51,9 @@ object Model {
 
       if (queryIndex != -1 && queryIndex + 1 < words.length) {
         val suggestedWord = words(queryIndex + 1)
-        if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
+        //if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
           map(suggestedWord) = map.getOrElse(suggestedWord, 0) + 1
-        }
+        //}
       }
 
     }

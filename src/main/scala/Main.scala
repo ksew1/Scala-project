@@ -86,16 +86,33 @@ object Main {
       "Donald_Trump",
       "Piwo"
     )
+    /*
     titles.foreach { title =>
       val text = Data.getWikipediaPlainText(title)
       println(text)
       println()
       Model.train(text, indexPath)
     }
+        */
+    /*
+    println("Fetching books")
+    val books = Data.fetchWolneLekturyBooks()
+    println("Training books")
+    books match {
+      case Some(books) => {
+        for (i <- books.indices) {
+          println(s"Training book ${i + 1}/${books.length}")
+          Model.train(books(i), indexPath)
+        }
+      }
+      case _ => println("Failed to fetch books")
+    }
+  */
 
 
 
-    val predictionTexts = List("polska", "kremówki", "świat", "kot",
+    println("Predicting")
+    val predictionTexts = List("pyszne piwo","polska", "kremówki", "świat", "kot",
       "dom",
       "samochód",
       "szkoła",
