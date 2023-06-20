@@ -25,8 +25,12 @@ object Model {
     writer.close()
   }
 
+  private def getQueryIndex(words: Array[String], queryText: String): Option[Int] = {
+    if (words.length > 2) Some(words.indexOf(queryText)) else None
+  }
+
   def predict(queryText: String, indexPath: String): List[String] = {
-    val map = mutable.Map()[String, Int]
+    val map: mutable.Map[String, Int] = mutable.Map.empty[String, Int]
     val reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)))
     val searcher = new IndexSearcher(reader)
     val parser = new QueryParser("content", new ShingleAnalyzerWrapper(new StandardAnalyzer(), 2))
@@ -41,18 +45,15 @@ object Model {
       val content = hitDoc.get("content")
       val words = content.split(" ")
 
-      if (words.length > 2) {
-        val queryIndex = words.indexOf(queryText)
+      val queryIndex = getQueryIndex(words, queryText).getOrElse(-1)
 
-
-        if (queryIndex != -1 && queryIndex + 1 < words.length) {
-          val suggestedWord = words(queryIndex + 1)
-          if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
-
-            map(suggestedWord) = map.getOrElse(suggestedWord, 0) + 1
-          }
+      if (queryIndex != -1 && queryIndex + 1 < words.length) {
+        val suggestedWord = words(queryIndex + 1)
+        if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
+          map(suggestedWord) = map.getOrElse(suggestedWord, 0) + 1
         }
       }
+
     }
     println(map)
     map.toList
