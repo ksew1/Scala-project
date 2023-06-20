@@ -1,3 +1,5 @@
+import model.Model
+
 object Main {
   def main(args: Array[String]): Unit = {
     val trainingText = "START The quick brown fox jumps over the lazy dog END " +
@@ -28,16 +30,16 @@ object Main {
       "Robert_Lewandowski",
       "Robert_Kubica",
       "Polska",
-      "Agnieszka_Radwańska",
-      "Małgorzata_Gersdorf",
-      "Wojciech_Szczęsny",
+      "Flaga",
+      "Kamil_Stoch",
+      "Status_miasta_w_Polsce_współcześnie",
       "Piotr_Anderszewski",
       "Anna_Dymna",
-      "Joanna_Senyszyn",
+      "Iron_Maiden",
       "Katarzyna_Kozyra",
       "Paweł_Pawlikowski",
       "Jerzy_Dudek",
-      "Magdalena_Abacjewska",
+      "Sport_w_Bydgoszczy",
       "Tomasz_Starzewski",
       "Orkiestra_Smyczkowa_Iuventus",
       "Festiwal_Solidarity_of_Arts",
@@ -66,30 +68,48 @@ object Main {
       "Stefan_Żeromski",
       "Maria_Konopnicka",
       "Juliusz_Słowacki",
-      "Bitwa pod Waterloo",
-      "Upadek Cesarstwa Rzymskiego",
-      "Rewolucja francuska",
-      "Wyprawa Apollo 11",
-      "Zamach na World Trade Center",
-      "Stany Zjednoczone",
-      "Wielka Brytania",
-      "Rosja",
+      "Polska_Rzeczpospolita_Ludowa",
+      "Rak_jelita_grubego",
+      "Rewolucja_francuska",
+      "Wyprawa_Apollo 11",
+      "Zamach_na_World_Trade_Center",
+      "Stany_Zjednoczone",
+      "Wielka_Brytania",
+      "StarCraft_II:_Wings_of_Liberty",
       "Chiny",
       "Indie",
-      "Elon Musk",
-      "Malala Yousafzai",
-      "Angela Merkel",
-      "Cristiano Ronaldo",
-      "Greta Thunberg",
-      "Donald Trump"
+      "Elon_Musk",
+      "Malala_Yousafzai",
+      "Angela_Merkel",
+      "Cristiano_Ronaldo",
+      "Greta_Thunberg",
+      "Donald_Trump",
+      "Piwo"
     )
-    //Model.train(trainingText, indexPath)
+//    titles.foreach { title =>
+//      val text = Data.getWikipediaPlainText(title)
+//      println(text)
+//      println()
+//      Model.train(text, indexPath)
+//    }
 
 
-    val predictionTexts = List("quick", "Lucene", "world", "learning", "Coffee", "Science",
-      "programming", "games", "Reading", "Python", "intelligence",
-      "OpenAI", "Nature", "people", "Health", "exercise", "Painting",
-      "Football", "Traveling", "Kawa")
+
+    val predictionTexts = List("polska", "kremówki", "świat", "kot",
+      "dom",
+      "samochód",
+      "szkoła",
+      "kawa",
+      "rząd",
+      "książka",
+      "drzewo",
+      "piłka",
+      "muzyka",
+      "komputer",
+      "telewizor",
+      "sport",
+      "serce",
+      "miłość","piwo","piwko","zazwyczaj")
 
     predictionTexts.foreach { pt =>
       println(s"\nPredictions for '$pt':")

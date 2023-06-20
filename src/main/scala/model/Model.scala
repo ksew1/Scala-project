@@ -1,4 +1,5 @@
-import java.nio.file.Paths
+package model
+
 import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.{Document, Field, TextField}
@@ -7,6 +8,7 @@ import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.FSDirectory
 
+import java.nio.file.Paths
 import scala.collection.mutable
 
 

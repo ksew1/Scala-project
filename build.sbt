@@ -15,10 +15,10 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-native" % "4.0.6"
 )
 libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31"
-libraryDependencies += "org.jsoup" % "jsoup" % "1.14.2"
+libraryDependencies += "org.jsoup" % "jsoup" % "1.15.4"
 
 libraryDependencies ++= Seq(
-  "com.softwaremill.sttp.client3" %% "core" % "3.3.13",
-  "io.circe" %% "circe-generic" % "0.14.1",
-  "io.circe" %% "circe-parser" % "0.14.1"
+  "com.softwaremill.sttp.client3" %% "core" % "3.8.13",
+  "io.circe" %% "circe-generic" % "0.14.5",
+  "io.circe" %% "circe-parser" % "0.14.5"
 )

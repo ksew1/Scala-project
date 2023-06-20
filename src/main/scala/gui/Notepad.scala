@@ -7,6 +7,7 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.{Alert, Button, TextArea}
 import scalafx.scene.input.{KeyCode, KeyEvent}
 import scalafx.scene.layout.VBox
+import model.Model
 
 import java.io.PrintWriter
 
@@ -60,12 +61,16 @@ object Notepad extends JFXApp3 {
 
   }
 
-  private def generateAutoText(): String = {
-    " - Automatyczny tekst"
+  private def generateAutoText(lastWord:String): String = {
+    val prediction = Model.predict(lastWord, "index").headOption.getOrElse("")
+    val out = if (prediction.nonEmpty) " "+prediction else prediction
+    out
   }
 
   private def insertAutoText(textArea: TextArea): Unit = {
-    lastInsertedText = generateAutoText()
+    val lastWord = textArea.text.value.trim.split("\\s+").last
+    println(s"Ostatnie słowo: $lastWord")
+    lastInsertedText = generateAutoText(lastWord)
     textArea.insertText(textArea.getCaretPosition, lastInsertedText)
   }
 

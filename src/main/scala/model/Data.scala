@@ -1,12 +1,14 @@
-import scala.io.Source
-import scala.util.Using
-import org.jsoup.Jsoup
-import org.json4s._
-import org.json4s.native.JsonMethods._
-import sttp.client3.HttpURLConnectionBackend
-import sttp.client3._
+package model
+
 import io.circe.generic.auto._
 import io.circe.parser.decode
+import org.json4s._
+import org.json4s.native.JsonMethods._
+import org.jsoup.Jsoup
+import sttp.client3.{HttpURLConnectionBackend, _}
+
+import scala.io.Source
+import scala.util.Using
 
 object Data {
   private def fetchFromURL(url: String): String = {
@@ -39,11 +41,12 @@ object Data {
   }
 
   def fetchWikipediaArticle(title: String): String = {
-    val url = s"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=$title"
+    val url = s"https://pl.wikipedia.org/w/api.php?action=query&exlimit=1&explaintext=1&exsectionformat=plain&prop=extracts&titles=$title&format=json"
     implicit val formats: DefaultFormats = DefaultFormats
     val jsonString = Using(Source.fromURL(url)) { source =>
       source.mkString
     }.getOrElse("")
+//    println(jsonString)
 
     val json = parse(jsonString)
     val extract = (json \ "query" \ "pages").extract[Map[String, JValue]].values.headOption.flatMap { page =>
@@ -85,12 +88,12 @@ object Data {
   }
 
   def main(args: Array[String]): Unit = {
-    val fetchedText = extractPlainText(fetchWikipediaArticle("Albert_Einstein"))
+    val fetchedText = extractPlainText(fetchWikipediaArticle("pizza"))
     val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9\\s]", "")
 
     println(cleanedText)
 
-    fetchWolneLekturyBooks()
+//    fetchWolneLekturyBooks()
 
 
   }
