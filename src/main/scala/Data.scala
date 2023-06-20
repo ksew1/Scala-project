@@ -78,6 +78,12 @@ object Data {
     document.text()
   }
 
+  def getWikipediaPlainText(title: String): String = {
+    val fetchedText = extractPlainText(fetchWikipediaArticle(title))
+    val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9\\s]", "")
+    cleanedText
+  }
+
   def main(args: Array[String]): Unit = {
     val fetchedText = extractPlainText(fetchWikipediaArticle("Albert_Einstein"))
     val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9\\s]", "")
