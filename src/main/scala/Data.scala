@@ -3,6 +3,10 @@ import scala.util.Using
 import org.jsoup.Jsoup
 import org.json4s._
 import org.json4s.native.JsonMethods._
+import sttp.client3.HttpURLConnectionBackend
+import sttp.client3._
+import io.circe.generic.auto._
+import io.circe.parser.decode
 
 object Data {
   private def fetchFromURL(url: String): String = {
@@ -10,8 +14,28 @@ object Data {
     Using(Source.fromURL(url)) { source =>
       source.mkString
 
-
     }.getOrElse("")
+  }
+
+  def fetchWolneLekturyBooks(): Unit = {
+    val backend = HttpURLConnectionBackend()
+    val request = basicRequest.get(uri"https://wolnelektury.pl/api/books/")
+    val response = request.send(backend)
+
+    response.body match {
+      case Right(body) =>
+        decode[List[Book]](body) match {
+          case Right(books) =>
+            val hrefs = books.map(_.href).map(_.split("/").filter(_.nonEmpty).last)
+            hrefs.foreach(book => println(fetchWolneLekturyBook(book)))
+
+          case Left(error) =>
+            println(s"Failed to parse JSON: $error")
+        }
+
+      case Left(error) =>
+        println(s"Failed to fetch data from API: $error")
+    }
   }
 
   def fetchWikipediaArticle(title: String): String = {
@@ -34,6 +58,15 @@ object Data {
     removeGutenbergLicense(fetchFromURL(url))
   }
 
+  def fetchWolneLekturyBook(title: String): String = {
+    val url = s"https://wolnelektury.pl/media/book/txt/$title.txt"
+    removeWolneLekturyFooter(fetchFromURL(url))
+  }
+
+  private def removeWolneLekturyFooter(text: String): String = {
+    val footerStart = text.indexOf("-----")
+    if (footerStart != -1) text.substring(0, footerStart).trim else text
+  }
   private def removeGutenbergLicense(text: String): String = {
     val start = text.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK")
     val end = text.lastIndexOf("*** END OF THE PROJECT GUTENBERG EBOOK")
@@ -44,12 +77,14 @@ object Data {
     val document = Jsoup.parse(html)
     document.text()
   }
+
   def main(args: Array[String]): Unit = {
-    val fetchedText =extractPlainText(fetchWikipediaArticle("Albert_Einstein"))
+    val fetchedText = extractPlainText(fetchWikipediaArticle("Albert_Einstein"))
     val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9\\s]", "")
 
     println(cleanedText)
 
+    fetchWolneLekturyBooks()
 
 
   }
