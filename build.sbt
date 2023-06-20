@@ -11,6 +11,8 @@ libraryDependencies ++= Seq(
   "org.apache.lucene" % "lucene-core" % "9.5.0",
   "org.apache.lucene" % "lucene-analyzers-common" % "8.11.2",
   "org.apache.lucene" % "lucene-queryparser" % "9.5.0",
+  "org.json4s" %% "json4s-core" % "4.0.6",
+  "org.json4s" %% "json4s-native" % "4.0.6"
 )
 libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31"
-
+libraryDependencies += "org.jsoup" % "jsoup" % "1.14.2"
