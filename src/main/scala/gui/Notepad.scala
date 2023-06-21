@@ -7,7 +7,7 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control.{Alert, Button, TextArea}
 import scalafx.scene.input.{KeyCode, KeyEvent}
 import scalafx.scene.layout.VBox
-import model.Model
+import model.{Model, ModelPredictor, ModelTrainer}
 
 import java.io.PrintWriter
 
@@ -17,6 +17,7 @@ object Notepad extends JFXApp3 {
   private var lastInsertedText = ""
   private var index = 0
   private var listOfWords = List[String]()
+  private val  model = new Model(ModelTrainer, ModelPredictor)
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -74,7 +75,7 @@ object Notepad extends JFXApp3 {
 
   private def generateAutoText(lastWord:String): String = {
     index = 0
-    listOfWords = Model.predict(lastWord, "index")
+    listOfWords = model.predict(lastWord, "index")
     println(s"Lista słów: $listOfWords")
     val prediction = listOfWords(index)
     println(s"Prediction: $prediction")

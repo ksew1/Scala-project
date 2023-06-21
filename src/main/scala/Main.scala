@@ -1,13 +1,17 @@
-import model.{Data, Model}
-import trainer.Trainer
+import model.{Model, ModelPredictor, ModelTrainer}
+import utils.DataTrainer
+
 
 object Main {
   def main(args: Array[String]): Unit = {
     val indexPath = "./index/"
+    val model = new Model(ModelTrainer, ModelPredictor)
+    val dataTrainer = new DataTrainer(model)
 
-    println("Training")
-//    Trainer.trainOnWikiArticles()
-//    Trainer.trainOnWolneLektury()
+
+    //println("Training")
+    //dataTrainer.trainOnAll()
+
 
     println("Predicting")
     val predictionTexts = List("pyszne piwo","polska", "kremówki", "świat", "kot",
@@ -27,8 +31,10 @@ object Main {
       "miłość","piwo","piwko","zazwyczaj")
 
     predictionTexts.foreach { pt =>
-      println(s"\nPredictions for '$pt':")
-      println(Model.predict(pt, indexPath))
+      println(s"\n\nPredictions for '$pt':\n")
+
+      val prediction =  model.predict(pt, indexPath).map(_.replaceAll("\\n", " "))
+      println(prediction.mkString("\n"))
     }
   }
 }

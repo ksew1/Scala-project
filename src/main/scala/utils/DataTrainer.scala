@@ -1,29 +1,32 @@
-package trainer
+package utils
 
-import provider.DataProvider
 import model.Model
-import utils.Bar
 
 
-object Trainer {
+class DataTrainer(model: Model){
   val indexPath = "./index/"
 
   def trainOnWikiArticles(): Unit = {
     val articles = DataProvider.findWikiArticles()
-    println("Training on wiki articles...")
+    println("\nTraining on wiki articles...")
     train(articles)
   }
 
   def trainOnWolneLektury(): Unit = {
     val books = DataProvider.findWolneLekuryBooks()
-    println("Training on wolne lektury...")
+    println("\nTraining on wolne lektury...")
     train(books)
+  }
+
+  def trainOnAll(): Unit = {
+    trainOnWikiArticles()
+    trainOnWolneLektury()
   }
 
   def train(data: List[String]): Unit = {
     data.zipWithIndex.foreach { case (text, id) =>
-      Bar.printProgressBar(id + 1, data.length)
-      Model.train(text, indexPath)
+      LoadBar.printProgressBar(id + 1, data.length)
+      model.train(text, indexPath)
     }
     println()
   }

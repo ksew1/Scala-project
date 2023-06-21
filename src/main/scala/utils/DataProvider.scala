@@ -1,11 +1,10 @@
-package provider
+package utils
 
-import utils.Bar
-import model.Data
+import provider.{WikiProvider, WoleLekturyProvider}
 
+import java.io._
 import scala.io.Source
 import scala.util.{Failure, Success, Try, Using}
-import java.io._
 
 object DataProvider {
 
@@ -22,9 +21,6 @@ object DataProvider {
       None
   }
 
-  private def validateArticles(articles: List[String]): List[String] = {
-    articles.filter(Data.fetchWikipediaArticle(_).nonEmpty)
-  }
 
   def saveToFile(line: List[String], fileName: String): Unit = {
     val file = new File(fileName)
@@ -39,25 +35,26 @@ object DataProvider {
     println("Fetching from file...")
     val articles = fetchFromFile("wiki_articles.txt").get
 
-    println("Validating articles...")
-    val validatedArticles = validateArticles(articles)
 
     println("Fetching articles...")
-    fetch(validatedArticles, Data.getWikipediaPlainText)
+    val fetchArticles = fetch(articles, WikiProvider.fetchWikipediaArticle)
+
+    println("Validating articles...")
+    fetchArticles.filter(_.nonEmpty)
   }
 
   def findWolneLekuryBooks(): List[String] = {
     println("Fetching books titles...")
 
-    val books = Data.fetchWolneLekturyBooks().get
+    val books = WoleLekturyProvider.fetchWolneLekturyBooks().get
 
     println("Fetching books...")
-    fetch(books, Data.fetchWolneLekturyBook)
+    fetch(books, WoleLekturyProvider.fetchWolneLekturyBook)
   }
 
   private def fetch(data: List[String], fetchFunction: String => String): List[String] = {
     data.zipWithIndex.map { case (text, id) =>
-      Bar.printProgressBar(id + 1, data.length)
+      LoadBar.printProgressBar(id + 1, data.length)
       fetchFunction(text)
     }
   }
@@ -75,8 +72,9 @@ object DataProvider {
       case None => println("Failed to fetch data from file")
     }
     */
-    findWikiArticles()
-    findWolneLekuryBooks()
+    println(findWikiArticles())
+    //println(Data.fetchWolneLekturyBook("kordian"))
+    //findWolneLekuryBooks()
   }
 
 }
