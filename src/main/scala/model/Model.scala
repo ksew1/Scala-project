@@ -3,7 +3,7 @@ package model
 import Traits.{Predictor, Trainer}
 
 
-class Model(trainer: Trainer, predictor: Predictor ) {
+class Model(trainer: Trainer, predictor: Predictor) extends Trainer with Predictor {
   def train(text: String, indexPath: String): Unit = {
     trainer.train(text: String, indexPath: String)
   }
