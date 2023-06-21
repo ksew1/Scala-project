@@ -30,8 +30,7 @@ object Data {
         decode[List[Book]](body) match {
           case Right(books) => {
             Some(books.map(_.href)
-              .map(_.split("/").filter(_.nonEmpty).last)
-              .map(book => fetchWolneLekturyBook(book)))
+              .map(_.split("/").filter(_.nonEmpty).last))
           }
 
 
