@@ -43,7 +43,7 @@ object DataProvider {
     val validatedArticles = validateArticles(articles)
 
     println("Fetching articles...")
-    fetch(validatedArticles, Data.fetchWikipediaArticle)
+    fetch(validatedArticles, Data.getWikipediaPlainText)
   }
 
   def findWolneLekuryBooks(): List[String] = {

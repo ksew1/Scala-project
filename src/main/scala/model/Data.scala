@@ -5,7 +5,6 @@ import io.circe.generic.auto._
 import io.circe.parser.decode
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import org.jsoup.Jsoup
 import sttp.client3.{HttpURLConnectionBackend, _}
 
 import scala.io.Source
@@ -70,7 +69,7 @@ object Data {
 
   def fetchWolneLekturyBook(title: String): String = {
     val url = s"https://wolnelektury.pl/media/book/txt/$title.txt"
-    removeWolneLekturyFooter(fetchFromURL(url))
+    extractPlainText(removeWolneLekturyFooter(fetchFromURL(url))).replaceAll("[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\\s\\n]", "").toLowerCase()
   }
 
   private def removeWolneLekturyFooter(text: String): String = {
@@ -86,26 +85,12 @@ object Data {
   def extractPlainText(html: String): String = {
     val polishHtml=StringEscapeUtils.unescapeJava(html)
     polishHtml
-//    val document = Jsoup.parse(polishHtml)
-//    document.text()
   }
 
   def getWikipediaPlainText(title: String): String = {
     val fetchedText = extractPlainText(fetchWikipediaArticle(title))
-    val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\\s]", "")
-    cleanedText
-  }
-
-  def main(args: Array[String]): Unit = {
-    val fetchedText = extractPlainText(fetchWikipediaArticle("pizza"))
-    val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\\s]", "")
-
-
-    println(cleanedText)
-
-//    fetchWolneLekturyBooks()
-
-
+    val cleanedText = fetchedText.replaceAll("[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ\\s\\n]", "")
+    cleanedText.toLowerCase()
   }
 
 

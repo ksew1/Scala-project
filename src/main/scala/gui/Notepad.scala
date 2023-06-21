@@ -15,6 +15,8 @@ object Notepad extends JFXApp3 {
   private var tabPressed = false
   private var autoTextSaved = false
   private var lastInsertedText = ""
+  private var index = 0
+  private var listOfWords = List[String]()
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -26,7 +28,8 @@ object Notepad extends JFXApp3 {
       textArea.wrapText = true
 
       textArea.onKeyPressed = (event: KeyEvent) => {
-        if (event.code == KeyCode.Tab) {
+        println(event.code)
+        if (event.code == KeyCode.Escape) {
           if (tabPressed && !autoTextSaved) {
             autoTextSaved = true
             saveAutoText(textArea)
@@ -41,7 +44,15 @@ object Notepad extends JFXApp3 {
           tabPressed = false
           autoTextSaved = false
         }
+
+        if (listOfWords.nonEmpty) {
+          if (event.code == KeyCode.Q) {
+            index = (index + 1) % listOfWords.length
+            textArea.insertText(textArea.getCaretPosition, listOfWords(index))
+          }
+        }
       }
+
 
       val saveButton = new Button("Save")
       saveButton.onAction = _ => {
@@ -62,7 +73,11 @@ object Notepad extends JFXApp3 {
   }
 
   private def generateAutoText(lastWord:String): String = {
-    val prediction = Model.predict(lastWord, "index").headOption.getOrElse("")
+    index = 0
+    listOfWords = Model.predict(lastWord, "index")
+    println(s"Lista słów: $listOfWords")
+    val prediction = listOfWords(index)
+    println(s"Prediction: $prediction")
     val out = if (prediction.nonEmpty) " "+prediction else prediction
     out
   }

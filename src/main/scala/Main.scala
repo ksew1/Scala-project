@@ -6,7 +6,8 @@ object Main {
     val indexPath = "./index/"
 
     println("Training")
-    Trainer.trainOnWikiArticles()
+//    Trainer.trainOnWikiArticles()
+//    Trainer.trainOnWolneLektury()
 
     println("Predicting")
     val predictionTexts = List("pyszne piwo","polska", "kremówki", "świat", "kot",
@@ -27,7 +28,7 @@ object Main {
 
     predictionTexts.foreach { pt =>
       println(s"\nPredictions for '$pt':")
-      Model.predict(pt, indexPath)
+      println(Model.predict(pt, indexPath))
     }
   }
 }

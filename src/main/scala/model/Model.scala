@@ -1,13 +1,17 @@
 package model
 
+import org.apache.lucene.analysis.core.{KeywordTokenizer, LowerCaseFilter}
+import org.apache.lucene.analysis.ngram.NGramTokenizer
 import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper
 import org.apache.lucene.analysis.standard.StandardAnalyzer
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute
 import org.apache.lucene.document.{Document, Field, TextField}
 import org.apache.lucene.index.{DirectoryReader, IndexWriter, IndexWriterConfig}
 import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.FSDirectory
 
+import java.io.StringReader
 import java.nio.file.Paths
 import scala.collection.mutable
 
@@ -25,6 +29,7 @@ object Model {
 
     writer.addDocument(doc)
     writer.close()
+
   }
 
   private def getQueryIndex(words: Array[String], queryText: String): Option[Int] = {
@@ -37,7 +42,8 @@ object Model {
     val searcher = new IndexSearcher(reader)
     val parser = new QueryParser("content", new ShingleAnalyzerWrapper(new StandardAnalyzer(), 2))
     val query = parser.parse(queryText)
-    val hits = searcher.search(query, 5).scoreDocs
+
+    val hits = searcher.search(query, 1000).scoreDocs
 
     println(s"Number of hits: ${hits.length}")
 
@@ -51,18 +57,21 @@ object Model {
 
       if (queryIndex != -1 && queryIndex + 1 < words.length) {
         val suggestedWord = words(queryIndex + 1)
-        //if (!suggestedWord.equals("START") && !suggestedWord.equals("END")) {
           map(suggestedWord) = map.getOrElse(suggestedWord, 0) + 1
         //}
       }
 
     }
-    println(map)
+//    println(map)
     map.toList
       .sortBy(_._2)
       .reverse
       .map(_._1)
+      .filter(_.length > 3)
+      .take(10)
+
   }
+
 
 }
 
