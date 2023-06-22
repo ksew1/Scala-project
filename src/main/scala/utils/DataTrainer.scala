@@ -3,7 +3,7 @@ package utils
 import model.Model
 
 
-class DataTrainer(model: Model){
+class DataTrainer(model: Model) {
   val indexPath = "./index/"
 
   def trainOnWikiArticles(): Unit = {

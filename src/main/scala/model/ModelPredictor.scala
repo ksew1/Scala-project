@@ -1,6 +1,6 @@
 package model
 
-import Traits.Predictor
+import traits.Predictor
 import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.index.DirectoryReader
@@ -44,14 +44,14 @@ object ModelPredictor extends Predictor {
     getSuggestedWord(queryIndex, words)
   }
 
-  private def getSearchHits(queryText: String, searcher: IndexSearcher,numberOfHits:Int): Array[ScoreDoc] = {
+  private def getSearchHits(queryText: String, searcher: IndexSearcher, numberOfHits: Int): Array[ScoreDoc] = {
     val parser = new QueryParser("content", new ShingleAnalyzerWrapper(new StandardAnalyzer(), 2))
     val query = parser.parse(queryText)
     searcher.search(query, numberOfHits).scoreDocs
   }
 
-  private def processHits(queryText: String, searcher: IndexSearcher, map: mutable.Map[String, Int],numberOfHits:Int): List[String] = {
-    getSearchHits(queryText, searcher,numberOfHits).foreach { hit =>
+  private def processHits(queryText: String, searcher: IndexSearcher, map: mutable.Map[String, Int], numberOfHits: Int): List[String] = {
+    getSearchHits(queryText, searcher, numberOfHits).foreach { hit =>
       findPrediction(hit, queryText, searcher) match {
         case Some(suggestedWord) => map(suggestedWord) = map.getOrElse(suggestedWord, 0) + 1
         case None => ()
@@ -60,12 +60,12 @@ object ModelPredictor extends Predictor {
     sortAndFilterResults(map)
   }
 
-  def predict(queryText: String, indexPath: String,numberOfHits:Int): List[String] = {
+  def predict(queryText: String, indexPath: String, numberOfHits: Int): List[String] = {
     val map: mutable.Map[String, Int] = mutable.Map.empty[String, Int]
     val reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)))
     val searcher = new IndexSearcher(reader)
 
-    processHits(queryText, searcher, map,numberOfHits:Int)
+    processHits(queryText, searcher, map, numberOfHits: Int)
   }
   /*
   def predict(queryText: String, indexPath: String): List[String] = {

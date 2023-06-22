@@ -20,9 +20,9 @@ object Notepad extends JFXApp3 {
   private var lastInsertedText = ""
   private var index = 0
   private var listOfWords = List[String]()
-  private val  model = new Model(ModelTrainer, ModelPredictor)
+  private val model = new Model(ModelTrainer, ModelPredictor)
   private var textArea: TextArea = _
-  private var precision=500
+  private var precision = 500
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
@@ -47,16 +47,16 @@ object Notepad extends JFXApp3 {
               insertAutoText()
             }
 
-          case _ if event.code==KeyCode.F11 || event.code==KeyCode.F12 =>
-            if (listOfWords.nonEmpty&& escPressed) {
-              index = if (event.code==KeyCode.F11) (index + 1) % listOfWords.length else math.floorMod(index - 1, listOfWords.length)
+          case _ if event.code == KeyCode.F11 || event.code == KeyCode.F12 =>
+            if (listOfWords.nonEmpty && escPressed) {
+              index = if (event.code == KeyCode.F11) (index + 1) % listOfWords.length else math.floorMod(index - 1, listOfWords.length)
               deleteAutoText()
               textArea.insertText(textArea.getCaretPosition, listOfWords(index))
               lastInsertedText = listOfWords(index)
             }
 
           case _ =>
-            if (escPressed && !autoTextSaved && !(event.code==KeyCode.F11)&& !(event.code==KeyCode.F12)) {
+            if (escPressed && !autoTextSaved && !(event.code == KeyCode.F11) && !(event.code == KeyCode.F12)) {
               deleteAutoText()
             }
             escPressed = false
@@ -88,8 +88,8 @@ object Notepad extends JFXApp3 {
 
       val vbox = new VBox(10)
       val hbox = new HBox(10)
-      hbox.children = Seq(createSlider(), saveButton,openButton)
-      vbox.children = Seq(textArea,hbox)
+      hbox.children = Seq(createSlider(), saveButton, openButton)
+      vbox.children = Seq(textArea, hbox)
       scene = new Scene(vbox)
 
     }
@@ -114,25 +114,26 @@ object Notepad extends JFXApp3 {
     sliderVbox
   }
 
-  private def generateAutoText(lastWord:String,precision:Int): String = {
+  private def generateAutoText(lastWord: String, precision: Int): String = {
     index = 0
-    if(lastWord.isEmpty) return ""
-    listOfWords = model.predict(lastWord.toLowerCase(), "index", precision)
-    listOfWords = if (listOfWords.nonEmpty ) listOfWords.map(word => {" "  + word})  else listOfWords
+    if (lastWord.isEmpty) return ""
+    listOfWords = model.predict(lastWord.toLowerCase().trim, "index", precision)
+    listOfWords = if (listOfWords.nonEmpty) listOfWords.map(word => {
+      " " + word
+    }) else listOfWords
     val prediction = if (listOfWords.nonEmpty) listOfWords(index) else ""
     prediction
   }
 
   private def insertAutoText(): Unit = {
     val lastWord = textArea.text.value.trim.split("\\s+").last
-    lastInsertedText = generateAutoText(lastWord,precision)
+    lastInsertedText = generateAutoText(lastWord, precision)
     textArea.insertText(textArea.getCaretPosition, lastInsertedText)
   }
 
   private def deleteAutoText(): Unit = {
     textArea.deleteText(textArea.getCaretPosition - lastInsertedText.length, textArea.getCaretPosition)
   }
-
 
 
   private def saveToFile(content: String, filename: String): Unit = {

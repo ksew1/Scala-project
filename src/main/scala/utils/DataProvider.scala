@@ -1,6 +1,6 @@
 package utils
 
-import provider.{WikiProvider, WoleLekturyProvider}
+import provider.{WikiProvider, BookProvider}
 
 import java.io._
 import scala.io.Source
@@ -46,10 +46,10 @@ object DataProvider {
   def findWolneLekuryBooks(): List[String] = {
     println("Fetching books titles...")
 
-    val books = WoleLekturyProvider.fetchWolneLekturyBooks().get
+    val books = BookProvider.fetchWolneLekturyBooks().get
 
     println("Fetching books...")
-    fetch(books, WoleLekturyProvider.fetchWolneLekturyBook)
+    fetch(books, BookProvider.fetchWolneLekturyBook)
   }
 
   private def fetch(data: List[String], fetchFunction: String => String): List[String] = {
@@ -60,21 +60,19 @@ object DataProvider {
   }
 
 
-
-
   def main(args: Array[String]): Unit = {
     /*
+
     val filename = "wiki_articles.txt"
     fetchFromFile(filename) match {
       case Some(lines) =>
-        val validatedArticles = validateArticles(lines)
+        val validatedArticles = lines.filter(WikiProvider.fetchWikipediaArticle(_).nonEmpty)
         saveToFile(validatedArticles, filename)
       case None => println("Failed to fetch data from file")
     }
-    */
-    println(findWikiArticles())
-    //println(Data.fetchWolneLekturyBook("kordian"))
-    //findWolneLekuryBooks()
+
+      */
+
   }
 
 }

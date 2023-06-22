@@ -1,6 +1,6 @@
 package model
 
-import Traits.{Predictor, Trainer}
+import traits.{Predictor, Trainer}
 
 
 class Model(trainer: Trainer, predictor: Predictor) extends Trainer with Predictor {
@@ -8,8 +8,8 @@ class Model(trainer: Trainer, predictor: Predictor) extends Trainer with Predict
     trainer.train(text: String, indexPath: String)
   }
 
-  def predict(queryText: String, indexPath: String,numberOfHits:Int): List[String] = {
-    predictor.predict(queryText: String, indexPath: String,numberOfHits:Int)
+  def predict(queryText: String, indexPath: String, numberOfHits: Int): List[String] = {
+    predictor.predict(queryText: String, indexPath: String, numberOfHits: Int)
   }
 }
 

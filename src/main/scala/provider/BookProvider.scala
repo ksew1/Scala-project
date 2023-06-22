@@ -1,12 +1,12 @@
 package provider
 
-import Traits.Provider
+import traits.Provider
 import io.circe.generic.auto._
 import io.circe.parser.decode
 import sttp.client3._
 import utils.Book
 
-object WoleLekturyProvider extends Provider {
+object BookProvider extends Provider {
   def fetchWolneLekturyBooks(): Option[List[String]] = {
     val response = sendRequest()
     parseResponseBody(response)

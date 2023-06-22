@@ -1,6 +1,6 @@
 package provider
 
-import Traits.Provider
+import traits.Provider
 import org.json4s.{DefaultFormats, JValue}
 import org.json4s.native.JsonMethods.parse
 
