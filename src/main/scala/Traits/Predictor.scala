@@ -1,5 +1,5 @@
 package Traits
 
 trait Predictor {
-  def predict(queryText: String, indexPath: String): List[String]
+  def predict(queryText: String, indexPath: String,numberOfHits:Int): List[String]
 }

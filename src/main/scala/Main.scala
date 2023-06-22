@@ -9,12 +9,12 @@ object Main {
     val dataTrainer = new DataTrainer(model)
 
 
-    //println("Training")
-    //dataTrainer.trainOnAll()
+//    println("Training")
+//    dataTrainer.trainOnAll()
 
 
     println("Predicting")
-    val predictionTexts = List("pyszne piwo","polska", "kremówki", "świat", "kot",
+    val predictionTexts = List("polska jest","polska", "kremówki", "świat", "kot",
       "dom",
       "samochód",
       "szkoła",
@@ -33,7 +33,7 @@ object Main {
     predictionTexts.foreach { pt =>
       println(s"\n\nPredictions for '$pt':\n")
 
-      val prediction =  model.predict(pt, indexPath).map(_.replaceAll("\\n", " "))
+      val prediction =  model.predict(pt, indexPath,500).map(_.replaceAll("\\n", " "))
       println(prediction.mkString("\n"))
     }
   }

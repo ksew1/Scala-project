@@ -1,56 +1,66 @@
 package gui
 
+import scala.util.Using
 import scalafx.Includes._
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{Alert, Button, TextArea}
+import scalafx.scene.control.{Alert, Button, Label, Slider, TextArea}
 import scalafx.scene.input.{KeyCode, KeyEvent}
-import scalafx.scene.layout.VBox
+import scalafx.scene.layout.{HBox, VBox}
 import model.{Model, ModelPredictor, ModelTrainer}
+import scalafx.stage.FileChooser
 
 import java.io.PrintWriter
+import scala.io.Source
 
 object Notepad extends JFXApp3 {
-  private var tabPressed = false
+  private var escPressed = false
   private var autoTextSaved = false
   private var lastInsertedText = ""
   private var index = 0
   private var listOfWords = List[String]()
   private val  model = new Model(ModelTrainer, ModelPredictor)
+  private var textArea: TextArea = _
+  private var precision=500
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
       title = "Notepad"
-      width = 600
-      height = 400
+      width = 800
+      height = 600
+      textArea = new TextArea()
+      textArea.prefWidth = 800
+      textArea.prefHeight = 500
 
-      val textArea = new TextArea()
+
       textArea.wrapText = true
+      textArea.onKeyPressed = handleKeyPressed(_)
 
-      textArea.onKeyPressed = (event: KeyEvent) => {
-        println(event.code)
-        if (event.code == KeyCode.Escape) {
-          if (tabPressed && !autoTextSaved) {
-            autoTextSaved = true
-            saveAutoText(textArea)
-          } else {
-            tabPressed = true
-            insertAutoText(textArea)
-          }
-        } else {
-          if (tabPressed && !autoTextSaved) {
-            deleteAutoText(textArea)
-          }
-          tabPressed = false
-          autoTextSaved = false
-        }
+      private def handleKeyPressed(event: KeyEvent): Unit = {
+        event.code match {
+          case KeyCode.Escape =>
+            if (escPressed && !autoTextSaved) {
+              autoTextSaved = true
+            } else {
+              escPressed = true
+              insertAutoText()
+            }
 
-        if (listOfWords.nonEmpty) {
-          if (event.code == KeyCode.Q) {
-            index = (index + 1) % listOfWords.length
-            textArea.insertText(textArea.getCaretPosition, listOfWords(index))
-          }
+          case _ if event.code==KeyCode.F11 || event.code==KeyCode.F12 =>
+            if (listOfWords.nonEmpty&& escPressed) {
+              index = if (event.code==KeyCode.F11) (index + 1) % listOfWords.length else math.floorMod(index - 1, listOfWords.length)
+              deleteAutoText()
+              textArea.insertText(textArea.getCaretPosition, listOfWords(index))
+              lastInsertedText = listOfWords(index)
+            }
+
+          case _ =>
+            if (escPressed && !autoTextSaved && !(event.code==KeyCode.F11)&& !(event.code==KeyCode.F12)) {
+              deleteAutoText()
+            }
+            escPressed = false
+            autoTextSaved = false
         }
       }
 
@@ -62,9 +72,24 @@ object Notepad extends JFXApp3 {
         showAlert("Zapisano", "Zapisano do pliku", "Zapisano do pliku saved.txt")
 
       }
-      val vbox = new VBox(10)
+      val openButton = new Button("Open")
+      openButton.onAction = _ => {
+        val fileChooser = new FileChooser()
+        fileChooser.title = "Open File"
+        val selectedFile = fileChooser.showOpenDialog(stage)
+        if (selectedFile != null) {
+          Using(Source.fromFile(selectedFile)) { source =>
+            textArea.text = source.mkString
+          }.getOrElse {
+            showAlert("Błąd", "Błąd odczytu pliku", "Nie udało się odczytać pliku")
+          }
+        }
+      }
 
-      vbox.children = Seq(textArea, saveButton)
+      val vbox = new VBox(10)
+      val hbox = new HBox(10)
+      hbox.children = Seq(createSlider(), saveButton,openButton)
+      vbox.children = Seq(textArea,hbox)
       scene = new Scene(vbox)
 
     }
@@ -73,30 +98,41 @@ object Notepad extends JFXApp3 {
 
   }
 
-  private def generateAutoText(lastWord:String): String = {
-    index = 0
-    listOfWords = model.predict(lastWord, "index")
-    println(s"Lista słów: $listOfWords")
-    val prediction = listOfWords(index)
-    println(s"Prediction: $prediction")
-    val out = if (prediction.nonEmpty) " "+prediction else prediction
-    out
+  private def createSlider() = {
+    val slider = new Slider()
+    slider.min = 1
+    slider.max = 1000
+    slider.value = precision
+    val sliderLabel = new Label(s"Dokładność: $precision")
+    slider.valueProperty().addListener { (_, _, newValue) =>
+      sliderLabel.text = s"Dokładność: ${newValue.intValue()}"
+      precision = newValue.intValue()
+    }
+
+    val sliderVbox = new VBox(10)
+    sliderVbox.children = Seq(slider, sliderLabel)
+    sliderVbox
   }
 
-  private def insertAutoText(textArea: TextArea): Unit = {
+  private def generateAutoText(lastWord:String,precision:Int): String = {
+    index = 0
+    if(lastWord.isEmpty) return ""
+    listOfWords = model.predict(lastWord.toLowerCase(), "index", precision)
+    listOfWords = if (listOfWords.nonEmpty ) listOfWords.map(word => {" "  + word})  else listOfWords
+    val prediction = if (listOfWords.nonEmpty) listOfWords(index) else ""
+    prediction
+  }
+
+  private def insertAutoText(): Unit = {
     val lastWord = textArea.text.value.trim.split("\\s+").last
-    println(s"Ostatnie słowo: $lastWord")
-    lastInsertedText = generateAutoText(lastWord)
+    lastInsertedText = generateAutoText(lastWord,precision)
     textArea.insertText(textArea.getCaretPosition, lastInsertedText)
   }
 
-  private def deleteAutoText(textArea: TextArea): Unit = {
+  private def deleteAutoText(): Unit = {
     textArea.deleteText(textArea.getCaretPosition - lastInsertedText.length, textArea.getCaretPosition)
   }
 
-  private def saveAutoText(textArea: TextArea): Unit = {
-    val autoText = textArea.text.value
-  }
 
 
   private def saveToFile(content: String, filename: String): Unit = {
@@ -107,7 +143,7 @@ object Notepad extends JFXApp3 {
   }
 
   private def showAlert(alertTitle: String, header: String, content: String): Unit = {
-    val alert = new Alert(AlertType.Information) {
+    new Alert(AlertType.Information) {
       title = alertTitle
       headerText = header
       contentText = content

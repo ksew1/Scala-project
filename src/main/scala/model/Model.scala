@@ -8,8 +8,8 @@ class Model(trainer: Trainer, predictor: Predictor) extends Trainer with Predict
     trainer.train(text: String, indexPath: String)
   }
 
-  def predict(queryText: String, indexPath: String): List[String] = {
-    predictor.predict(queryText: String, indexPath: String)
+  def predict(queryText: String, indexPath: String,numberOfHits:Int): List[String] = {
+    predictor.predict(queryText: String, indexPath: String,numberOfHits:Int)
   }
 }
 
