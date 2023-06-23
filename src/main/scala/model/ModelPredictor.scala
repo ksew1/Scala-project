@@ -67,39 +67,4 @@ object ModelPredictor extends Predictor {
 
     processHits(queryText, searcher, map, numberOfHits: Int)
   }
-  /*
-  def predict(queryText: String, indexPath: String): List[String] = {
-    val map: mutable.Map[String, Int] = mutable.Map.empty[String, Int]
-    val reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)))
-    val searcher = new IndexSearcher(reader)
-    val parser = new QueryParser("content", new ShingleAnalyzerWrapper(new StandardAnalyzer(), 2))
-    val query = parser.parse(queryText)
-
-    val hits = searcher.search(query, 500).scoreDocs
-
-
-    hits.foreach { hit =>
-      val storedFields = searcher.storedFields()
-      val hitDoc = storedFields.document(hit.doc)
-      val content = hitDoc.get("content")
-      val words = content.split(" ")
-
-      val queryIndex = getQueryIndex(words, queryText).getOrElse(-1)
-
-      getSuggestedWord(queryIndex, words) match {
-        case Some(suggestedWord) => map(suggestedWord) = map.getOrElse(suggestedWord, 0) + 1
-        case None => ()
-      }
-
-    }
-    map.toList
-      .sortBy(_._2)
-      .reverse
-      .map(_._1)
-      .filter(_.length > 3)
-      .take(10)
-
-  }
-   */
-
 }
