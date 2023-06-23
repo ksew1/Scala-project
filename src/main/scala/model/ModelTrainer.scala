@@ -34,20 +34,4 @@ object ModelTrainer extends Trainer {
     addDocumentToWriter(writer, doc)
   }
 
-  /*
-  def train(text: String, indexPath: String): Unit = {
-      val dir = FSDirectory.open(Paths.get(indexPath))
-      val analyzer = new ShingleAnalyzerWrapper(new StandardAnalyzer(), 2)
-      val iwc = new IndexWriterConfig(analyzer)
-      val writer = new IndexWriter(dir, iwc)
-
-      val doc = new Document()
-      doc.add(new TextField("content", text, Field.Store.YES))
-
-      writer.addDocument(doc)
-      writer.close()
-    }
-
-   */
-
 }
